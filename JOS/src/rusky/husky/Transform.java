@@ -23,11 +23,14 @@ public abstract class Transform<TValue, TApplicant> {
 	protected abstract TValue getCurrentValue(TApplicant object);
 
 	public void update(Clock time) {
-		if(getProgress(time.getTime()) >= 0 && getProgress(time.getTime()) <= 1)
+		if(startTime > time.getTime()) 
+			startValue = getCurrentValue(object);
+		
+		if(startTime <= time.getTime() && time.getTime() <= endTime)
 			apply(object, lerp(startValue, endValue, curve.apply((float) getProgress(time.getTime()))));
-		else if(getProgress(time.getTime()) >= 1 && getProgress(time.getTime() - time.getElapsedTime()) <= 1)
+		else if(time.getTime() >= endTime && time.getTime() - time.getElapsedTime() <= endTime)
 			apply(object, endValue);
-		else if(getProgress(time.getTime()) <= 0 && getProgress(time.getTime() - time.getElapsedTime()) >= 0)
+		else if(time.getTime() <= startTime && time.getTime() - time.getElapsedTime() >= startTime)
 			apply(object, startValue);
 	}
 
