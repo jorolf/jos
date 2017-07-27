@@ -57,12 +57,12 @@ public class TestCaseButton extends Container<Drawable>{
 	
 	@Override
 	protected boolean onHover(InputState state) {
-		background.fadeTo(Color.GRAY, 200, Easing.QuadOut);
+		background.transform().fadeTo(Color.GRAY, 200, Easing.QuadOut);
 		return true;
 	}
 	
 	@Override
 	protected void onHoverLost(InputState state) {
-		background.fadeTo(Color.BLACK, 200, Easing.QuadOut);
+		background.transform().fadeTo(Color.BLACK, 200, Easing.QuadOut);
 	}
 }

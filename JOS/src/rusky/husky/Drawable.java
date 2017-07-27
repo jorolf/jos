@@ -3,18 +3,13 @@ package rusky.husky;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import rusky.husky.math.Polygon;
 import rusky.husky.math.Vector2;
 import rusky.husky.math.polygons.Rectangle;
-import rusky.husky.transforms.AlphaTransform;
-import rusky.husky.transforms.ColorTransform;
-import rusky.husky.transforms.PositionTransform;
-import rusky.husky.transforms.ScaleTransform;
-import rusky.husky.transforms.SizeTransform;
 
 public class Drawable implements Comparable<Drawable>, IDrawable {
 
@@ -288,13 +283,6 @@ public class Drawable implements Comparable<Drawable>, IDrawable {
 
 	protected void onMouseDrag(InputState state) {
 	}
-	
-//	public final void triggerKeyTyped(InputState state, char character) {
-//		onKeyTyped(createCloneInParentSpace(state), character);
-//	}
-//
-//	protected void onKeyTyped(InputState state, char character) {
-//	}
 
 	public final boolean triggerFocus(InputState state) {
 		focus = true;
@@ -347,36 +335,27 @@ public class Drawable implements Comparable<Drawable>, IDrawable {
 		return Integer.compare(depth, other.depth);
 	}
 
-	private List<Transform<?, ? extends IDrawable>> transforms = new CopyOnWriteArrayList<>();
+	private List<Transform<?, ? extends IDrawable>> transforms = new ArrayList<>();
 
-	@Override
-	public void transformTo(Transform<?, ? extends IDrawable> transform) {
-		transform.startTime = getClock().getTime();
+	public void transformTo(Transform<?, ? extends IDrawable> transform, double delay) {
+		transform.startTime = getClock().getTime() + delay;
 		if(transform.endTime > getClock().getTime())
 			transforms.add(transform);
 		else
 			transform.isFinished(getClock().getTime());
+	}
+	
+	public void transformTo(Transform<?, ? extends IDrawable> transform) {
+		transformTo(transform, 0);
 	}
 
 	private void updateTransforms() {
 		transforms.removeIf(transform -> transform.isFinished(getClock().getTime()));
 		transforms.forEach(transform -> transform.update(getClock()));
 	}
-
-	public void resizeTo(Vector2 to, double duration, Easing curve) {
-		transformTo(new SizeTransform(this, to, getClock().getTime() + duration, curve));
-	}
-
-	public void scaleTo(Vector2 to, double duration, Easing curve) {
-		transformTo(new ScaleTransform(this, to, getClock().getTime() + duration, curve));
-	}
-
-	public void moveTo(Vector2 to, double duration, Easing curve) {
-		transformTo(new PositionTransform(this, to, getClock().getTime() + duration, curve));
-	}
-
-	public void fadeTo(Color to, double duration, Easing curve) {
-		transformTo(new ColorTransform(this, to, getClock().getTime() + duration, curve));
+	
+	public TransformSequence transform() {
+		return new TransformSequence(this);
 	}
 
 	@Override
@@ -438,9 +417,5 @@ public class Drawable implements Comparable<Drawable>, IDrawable {
 	
 	public void hide(){
 		setAlpha(0);
-	}
-	
-	public void fadeTo(float to, double duration, Easing curve){
-		transformTo(new AlphaTransform(this, to, duration, curve));
 	}
 }

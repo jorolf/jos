@@ -32,17 +32,17 @@ public class TestCaseEasings extends TestCase{
 		
 		addButton("bounce", () -> {
 			box.setY(-200);
-			box.moveTo(Vector2.ZERO.clone(), 1000, Easing.BounceOut);
+			box.transform().moveTo(Vector2.ZERO.clone(), 1000, Easing.BounceOut);
 		});
 		
 		addButton("elastic", () -> {
 			box.setY(-200);
-			box.moveTo(Vector2.ZERO.clone(), 1000, Easing.ElasticIn);
+			box.transform().moveTo(Vector2.ZERO.clone(), 1000, Easing.ElasticIn);
 		});
 		
 		addButton("size", () -> {
 			box.setWidth(200);
-			box.resizeTo(new Vector2(100), 500, Easing.QuintIn);
+			box.transform().resizeTo(new Vector2(100), 500, Easing.QuintIn);
 		});
 		
 		addButton("2x speed", () -> clock.rate = 2);

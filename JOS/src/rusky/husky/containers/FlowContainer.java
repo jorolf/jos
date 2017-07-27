@@ -36,20 +36,20 @@ public class FlowContainer<T extends Drawable> extends Container<T>{
 						currentY += nextY + spacing.getY();
 						nextY = 0;
 					}
-					child.moveTo(new Vector2(currentX, currentY), flowDuration, flowCurve);
+					child.transform().moveTo(new Vector2(currentX, currentY), flowDuration, flowCurve);
 					currentX += child.getLayoutSize().getX() + spacing.getX();
 					nextY = Math.max(nextY, child.getLayoutSize().getY());
 				});
 			}else if(direction.contains(Direction.Horizontal)){
 				currentX = 0;
 				getChildren().stream().filter(child -> child.isPresent()).sorted().forEach(child ->{
-					child.moveTo(new Vector2(currentX, 0), flowDuration, flowCurve);
+					child.transform().moveTo(new Vector2(currentX, 0), flowDuration, flowCurve);
 					currentX += child.getLayoutSize().getX() + spacing.getX();
 				});
 			}else if(direction.contains(Direction.Vertical)){
 				currentY = 0;
 				getChildren().stream().filter(child -> child.isPresent()).sorted().forEach(child ->{
-					child.moveTo(new Vector2(0, currentY), flowDuration, flowCurve);
+					child.transform().moveTo(new Vector2(0, currentY), flowDuration, flowCurve);
 					currentY += child.getLayoutSize().getY() + spacing.getY();
 				});
 			}
